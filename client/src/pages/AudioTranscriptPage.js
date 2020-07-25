@@ -7,7 +7,7 @@ import '../styles/main.css';
 
 const AudioTranscriptPage = () => {
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col antialiased">
       {/* Audio Container */}
       <div className="w-full flex items-center justify-between h-16 bg-gray-200 px-8">
         <AudioPlayer />

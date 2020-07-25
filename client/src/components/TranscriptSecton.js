@@ -54,13 +54,17 @@ const Transcript = ({ wt, index, curTime, dispatch, searchText }) => {
       onMouseEnter={() => setShowShare(true)}
       onMouseLeave={() => setShowShare(false)}
     >
-      <div className={`w-1/12 text-${index % 2 === 0 ? 'indigo' : 'blue'}-500`}>
+      <div
+        className={`w-1/12 ${
+          index % 2 === 0 ? 'text-indigo-500' : 'text-blue-500'
+        }`}
+      >
         {startTime}
       </div>
       <div
-        className={`w-11/12 border-l-2 border-${
-          index % 2 === 0 ? 'indigo' : 'blue'
-        }-200 pl-4 ${
+        className={`w-11/12 border-l-2 ${
+          index % 2 === 0 ? 'border-indigo-200' : 'border-blue-200'
+        } pl-4 ${
           curTime >= parseFloat(startTime) && curTime <= parseFloat(endTime)
             ? 'bg-gray-200'
             : 'bg-white'
