@@ -1,12 +1,12 @@
 module.exports = {
-  purge: [],
+  purge: ['./src/**/*.js', './src/*.js'],
   theme: {
     extend: {
       space: {
-        sm: '1px'
-      }
-    }
+        sm: '1px',
+      },
+    },
   },
   variants: {},
-  plugins: []
+  plugins: [],
 };
