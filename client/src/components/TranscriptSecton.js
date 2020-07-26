@@ -39,6 +39,8 @@ const Transcript = ({ wt, index, curTime, dispatch, searchText }) => {
   let startTime = wt.find((i) => i.word !== '').startTime;
   let endTime = wt[wt.length - 1].endTime;
   const [showShare, setShowShare] = useState(false);
+
+  // hides the block of text not having the searched word
   if (
     searchText &&
     wt.findIndex((_) =>
@@ -47,6 +49,14 @@ const Transcript = ({ wt, index, curTime, dispatch, searchText }) => {
   ) {
     return null;
   }
+
+  // sets color for prospect and you blocks
+  let borderColor = index % 2 === 0 ? 'border-indigo-200' : 'border-blue-200';
+  let timeTextColor = index % 2 === 0 ? 'text-indigo-500' : 'text-blue-500';
+  let fullBgColor =
+    curTime >= parseFloat(startTime) && curTime <= parseFloat(endTime)
+      ? 'bg-gray-200'
+      : 'bg-white';
   return (
     <div
       key={index}
@@ -54,37 +64,25 @@ const Transcript = ({ wt, index, curTime, dispatch, searchText }) => {
       onMouseEnter={() => setShowShare(true)}
       onMouseLeave={() => setShowShare(false)}
     >
-      <div
-        className={`w-1/12 ${
-          index % 2 === 0 ? 'text-indigo-500' : 'text-blue-500'
-        }`}
-      >
-        {startTime}
-      </div>
-      <div
-        className={`w-11/12 border-l-2 ${
-          index % 2 === 0 ? 'border-indigo-200' : 'border-blue-200'
-        } pl-4 ${
-          curTime >= parseFloat(startTime) && curTime <= parseFloat(endTime)
-            ? 'bg-gray-200'
-            : 'bg-white'
-        }`}
-      >
+      <div className={`w-1/12 ${timeTextColor}`}>{startTime}</div>
+      <div className={`w-11/12 border-l-2 ${borderColor} pl-4 ${fullBgColor}`}>
         {wt.map((item, itemIndex) => {
           if (!item.word) return null;
+
+          // set color for current synced text and searched text
+          let currentWordColor =
+            curTime >= parseFloat(item.startTime) &&
+            curTime <= parseFloat(item.endTime)
+              ? 'bg-blue-400'
+              : '';
+          let serachWordColor =
+            searchText &&
+            item.word.toLowerCase().includes(searchText.toLowerCase())
+              ? 'bg-yellow-400'
+              : '';
           return (
             <span
-              className={`transition-colors duration-200 ease-out ${
-                curTime >= parseFloat(item.startTime) &&
-                curTime <= parseFloat(item.endTime)
-                  ? 'bg-blue-400'
-                  : ''
-              } cursor-pointer focus:bg-blue-300 hover:bg-blue-300 text-gray-800 ${
-                searchText &&
-                item.word.toLowerCase().includes(searchText.toLowerCase())
-                  ? 'bg-yellow-400'
-                  : ''
-              }`}
+              className={`transition-colors duration-200 ease-out ${currentWordColor} cursor-pointer focus:bg-blue-300 hover:bg-blue-300 text-gray-800 ${serachWordColor}`}
               key={itemIndex}
               onClick={() =>
                 dispatch(setJumpToTime(parseFloat(item.startTime)))

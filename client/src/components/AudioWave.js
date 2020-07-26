@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/main.css';
 
 const AudioWave = ({
@@ -12,6 +12,24 @@ const AudioWave = ({
   let textColor = index ? 'text-blue-500' : 'text-indigo-700';
   let speaker = index ? 'Prospect' : 'You';
   let border = !index ? 'border-b border-gray-500' : '';
+  let showProgress = !index ? true : false;
+
+  const [delayHandler, setDelayHandler] = useState(null);
+
+  // creates a debounce effect using mouseEnter and mouseLeave events
+  const handleMouseEnter = (time) => {
+    setDelayHandler(
+      setTimeout(() => {
+        jumpTo(parseFloat(time));
+      }, 500)
+    );
+  };
+
+  // makes sure the slider moves to a set location only if the user has hovered over for atleast 500ms, this eliminates stray mouse overs.
+  const handleMouseLeave = () => {
+    clearTimeout(delayHandler);
+  };
+
   return (
     <div className="flex">
       <div
@@ -24,29 +42,29 @@ const AudioWave = ({
           let width =
             parseFloat(item.endTime, 10) * 10 -
             parseFloat(item.startTime, 10) * 10;
-
+          let waveBg = `${
+            item.word
+              ? `${
+                  curTime < parseFloat(item.endTime) ? bgColor : 'bg-gray-400'
+                } h-12 border-r-2 border-l-2 border-white-700`
+              : 'bg-gray-100 h-12'
+          }`;
+          let barWidth = `${width > 0 ? width * 5 : 2}px`;
+          let progressWidth = `${Math.floor(curTime * 10) * 5}px`;
           return (
             <React.Fragment key={index}>
               <div
-                className={`${
-                  item.word
-                    ? `${
-                        curTime < parseFloat(item.endTime)
-                          ? bgColor
-                          : 'bg-gray-400'
-                      } h-12 border-r-2 border-l-2 border-white-700`
-                    : 'bg-gray-100 h-12'
-                } cursor-pointer`}
+                className={`${waveBg} cursor-pointer`}
                 style={{
-                  width: `${width > 0 ? width * 5 : 2}px`,
+                  width: barWidth,
                 }}
-                title={JSON.stringify(item, null, 2)}
-                onClick={() => jumpTo(parseFloat(item.startTime))}
+                onMouseEnter={() => handleMouseEnter(item.startTime)}
+                onMouseLeave={handleMouseLeave}
               ></div>
-              {bgColor === 'bg-indigo-700' && (
+              {showProgress && (
                 <div
                   className="h-1 absolute border-b border-gray-700 opacity-75"
-                  style={{ width: `${Math.floor(curTime * 10) * 5 || 5}px` }}
+                  style={{ width: progressWidth }}
                 ></div>
               )}
             </React.Fragment>
